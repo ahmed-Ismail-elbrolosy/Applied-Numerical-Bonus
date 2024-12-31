@@ -12,6 +12,35 @@
             max-width: 100%;
             overflow-x: auto;
         }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+            min-height: 1em;
+            /* Ensure space is taken even if empty */
+        }
+
+        .form-container {
+            width: auto;
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .table-input {
+            width: 80px;
+        }
+
+        .collapsible-header {
+            cursor: pointer;
+        }
+
+        .collapsible-content {
+            display: none;
+        }
+
+        .collapsible-content.show {
+            display: block;
+        }
     </style>
 </head>
 
@@ -19,28 +48,77 @@
     <div class="container">
         <h1 class="mt-5">Numerical Analysis Visualization</h1>
         <div class="row">
-            <div class="col-md-4">
-                <div class="card mt-3">
+            <div class="col-md-6">
+                <div class="card mt-3 form-container">
                     <div class="card-body">
-                        <form id="graph-form" method="POST">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="x0">x<sub>0</sub>:</label>
-                                    <input type="number" class="form-control" id="x0" name="x0" required>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="y0">x<sub>f</sub>:</label>
-                                    <input type="number" class="form-control" id="y0" name="y0" required>
-                                </div>
-                            </div>
+                        <form id="points-form" method="POST">
                             <div class="form-group">
-                                <label for="step_value">Number of Steps (n):</label>
-                                <input type="number" class="form-control" id="step_value" name="step_value" required>
+                                <label>Enter Points:</label>
+                                <table class="table table-bordered" id="points-input-table">
+                                    <thead>
+                                        <tr>
+                                            <th>x</th>
+                                            <th>y</th>
+                                            <th><button type="button" class="btn btn-sm btn-success"
+                                                    id="add-point">+</button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="number" class="form-control table-input" name="x_values[]">
+                                            </td>
+                                            <td><input type="number" class="form-control table-input" name="y_values[]">
+                                            </td>
+                                            <td><button type="button"
+                                                    class="btn btn-sm btn-danger remove-point">-</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="form-group">
-                                <label for="equation">Equation:</label>
-                                <input type="text" class="form-control" id="equation" name="equation" required>
-                            </div>
+                        </form>
+                        <div class="error mt-3" id="points-form-error"></div>
+                    </div>
+                </div>
+                <div class="card mt-3 form-container">
+                    <div class="card-body">
+                        <div class="collapsible-header" data-toggle="collapse" data-target="#parameters-form-container">
+                            <h5>Enter Parameters <span class="float-right">&#9660;</span></h5>
+                        </div>
+                        <div id="parameters-form-container" class="collapsible-content">
+                            <form id="parameters-form" method="POST">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="x0">x<sub>0</sub>:</label>
+                                        <input type="number" class="form-control" id="x0" name="x0">
+                                        <div class="error" id="x0-error"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="y0">x<sub>f</sub>:</label>
+                                        <input type="number" class="form-control" id="y0" name="y0">
+                                        <div class="error" id="y0-error"></div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="step_value">Number of Steps (n):</label>
+                                        <input type="number" class="form-control" id="step_value" name="step_value">
+                                        <div class="error" id="step_value-error"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="equation">Equation:</label>
+                                        <input type="text" class="form-control" id="equation" name="equation">
+                                        <div class="error" id="equation-error"></div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Generate</button>
+                            </form>
+                            <div class="error mt-3" id="parameters-form-error"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3 form-container">
+                    <div class="card-body">
+                        <form id="algorithms-form" method="POST">
                             <div class="form-group">
                                 <label>Algorithms:</label><br>
                                 <input type="checkbox" id="cubic_spline" name="algorithms" value="cubic_spline">
@@ -52,32 +130,171 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Generate</button>
                         </form>
+                        <div class="error mt-3" id="algorithms-form-error"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <div class="mt-3" id="plot-div">
                     {{ plot_div|safe }}
+                </div>
+            </div>
+        </div>
+        <div class="mt-5">
+            <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#points-table"
+                aria-expanded="false" aria-controls="points-table">
+                Show Points Table
+            </button>
+            <div class="collapse mt-3" id="points-table">
+                <div class="card card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>x</th>
+                                <th>y</th>
+                                <th>Cubic Spline</th>
+                                <th>Cubic Spline Error</th>
+                                <th>Newton</th>
+                                <th>Newton Error</th>
+                                <th>Vandermonde</th>
+                                <th>Vandermonde Error</th>
+                            </tr>
+                        </thead>
+                        <tbody id="points-tbody">
+                            <!-- Points will be populated here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
     <script>
         $(document).ready(function () {
-            $('#graph-form').on('submit', function (event) {
-                event.preventDefault();
-                console.log('Form submitted'); // Add this line
-                $.ajax({
-                    url: '/',
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function (response) {
-                        $('#plot-div').html(response);
-                    },
-                    error: function (xhr, status, error) {
-                        $('#plot-div').html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+            function validateInputs() {
+                let isValid = true;
+                $('.error').text('');
+
+                const x0 = $('#x0').val();
+                const y0 = $('#y0').val();
+                const step_value = $('#step_value').val();
+                const equation = $('#equation').val();
+
+                if (x0 || y0 || step_value || equation) {
+                    if (!x0) {
+                        $('#x0-error').text('x0 is required.');
+                        isValid = false;
                     }
+                    if (!y0) {
+                        $('#y0-error').text('xf is required.');
+                        isValid = false;
+                    }
+                    if (!step_value) {
+                        $('#step_value-error').text('Number of steps is required.');
+                        isValid = false;
+                    }
+                    if (!equation) {
+                        $('#equation-error').text('Equation is required.');
+                        isValid = false;
+                    }
+                }
+
+                return isValid;
+            }
+
+            function generatePlot() {
+                if (validateInputs()) {
+                    $.ajax({
+                        url: '/',
+                        type: 'POST',
+                        data: $('#parameters-form').serialize() + '&' + $('#points-form').serialize() + '&' + $('#algorithms-form').serialize(),
+                        success: function (response) {
+                            $('#plot-div').html(response.plot_html);
+                            $('#parameters-form-error').text('');
+                            $('#points-form-error').text('');
+                            $('#algorithms-form-error').text('');
+                            populatePointsTable(response.points);
+                        },
+                        error: function (xhr, status, error) {
+                            $('#parameters-form-error').text('An error occurred: ' + xhr.responseText);
+                            $('#points-form-error').text('An error occurred: ' + xhr.responseText);
+                            $('#algorithms-form-error').text('An error occurred: ' + xhr.responseText);
+                        }
+                    });
+                }
+            }
+
+            function populatePointsTable(points) {
+                $('#points-tbody').empty();
+                points.forEach(point => {
+                    $('#points-tbody').append(`<tr>
+                        <td>${point.x}</td>
+                        <td>${point.y}</td>
+                        <td>${point.cubic_spline || ''}</td>
+                        <td>${point.cubic_spline_error || ''}</td>
+                        <td>${point.newton || ''}</td>
+                        <td>${point.newton_error || ''}</td>
+                        <td>${point.vandermonde || ''}</td>
+                        <td>${point.vandermonde_error || ''}</td>
+                    </tr>`);
                 });
+            }
+
+            function sortTable() {
+                let rows = $('#points-input-table tbody tr').get();
+                rows.sort(function (a, b) {
+                    let A = parseFloat($(a).find('input[name="x_values[]"]').val());
+                    let B = parseFloat($(b).find('input[name="x_values[]"]').val());
+                    return A - B;
+                });
+                $.each(rows, function (index, row) {
+                    $('#points-input-table tbody').append(row);
+                });
+            }
+
+            $('#parameters-form').on('submit', function (event) {
+                event.preventDefault();
+                generatePlot();
+            });
+
+            $('#points-form').on('submit', function (event) {
+                event.preventDefault();
+                generatePlot();
+            });
+
+            $('#algorithms-form').on('submit', function (event) {
+                event.preventDefault();
+                generatePlot();
+            });
+
+            $('#x0, #y0, #step_value, #equation').on('input', function () {
+                generatePlot();
+            });
+
+            $('#cubic_spline, #newton, #vandermonde').on('change', function () {
+                generatePlot();
+            });
+
+            $('#points-input-table').on('input', 'input', function () {
+                sortTable();
+                generatePlot();
+            });
+
+            $('#add-point').on('click', function () {
+                $('#points-input-table tbody').append(`<tr>
+                    <td><input type="number" class="form-control table-input" name="x_values[]"></td>
+                    <td><input type="number" class="form-control table-input" name="y_values[]"></td>
+                    <td><button type="button" class="btn btn-sm btn-danger remove-point">-</button></td>
+                </tr>`);
+            });
+
+            $(document).on('click', '.remove-point', function () {
+                $(this).closest('tr').remove();
+                generatePlot();
+            });
+
+            $('.collapsible-header').on('click', function () {
+                $(this).find('span').toggleClass('rotate');
+                $(this).next('.collapsible-content').toggleClass('show');
             });
         });
     </script>

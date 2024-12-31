@@ -2,3 +2,4 @@ Flask==2.0.1
 plotly==5.3.1
 numpy==1.21.2
 sympy==1.8
+numexpr==2.7.3
