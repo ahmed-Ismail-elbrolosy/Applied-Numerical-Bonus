@@ -1,0 +1,163 @@
+:root {
+    --color-light: white;
+    --color-dark: #212121;
+    --color-signal: #fab700;
+    --color-background: #ba6805;
+    --color-text: #d3d3d3;
+    /* Very light gray */
+    --color-accent: var(--color-signal);
+    --size-bezel: .5rem;
+    --size-radius: 4px;
+    line-height: 1.4;
+    font-family: 'Inter', sans-serif;
+    font-size: calc(.6rem + .4vw);
+    color: var(--color-text);
+    background: var(--color-background);
+    font-weight: 300;
+    padding: 0 calc(var(--size-bezel) * 3);
+}
+
+h1,
+h2,
+h3 {
+    font-weight: 900;
+}
+
+mark {
+    background: var(--color-accent);
+    color: var(--color-text);
+    font-weight: bold;
+    padding: 0 0.2em;
+}
+
+.card {
+    background: var(--color-background);
+    padding: calc(4 * var(--size-bezel));
+    margin-top: calc(4 * var(--size-bezel));
+    border-radius: var(--size-radius);
+    border: 3px solid var(--color-shadow, currentColor);
+    box-shadow: .5rem .5rem 0 var(--color-shadow, currentColor);
+}
+
+.card--inverted {
+    --color-background: var(--color-dark);
+    color: var(--color-light);
+    --color-shadow: var(--color-accent);
+}
+
+.card--accent {
+    --color-background: var(--color-signal);
+    --color-accent: var(--color-light);
+    color: var(--color-dark);
+}
+
+*:first-child {
+    margin-top: 0;
+}
+
+.input {
+    position: relative;
+}
+
+.input__label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: calc(var(--size-bezel) * 0.75) calc(var(--size-bezel) * .5);
+    margin: calc(var(--size-bezel) * 0.75 + 3px) calc(var(--size-bezel) * .5);
+    background: var(--color-background);
+    white-space: nowrap;
+    transform: translate(0, 0);
+    transform-origin: 0 0;
+    transition: transform 120ms ease-in;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.input__field {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    border: 3px solid currentColor;
+    padding: calc(var(--size-bezel) * 1.5) var(--size-bezel);
+    color: currentColor;
+    background: transparent;
+    border-radius: var(--size-radius);
+}
+
+.input__field:focus,
+.input__field:not(:placeholder-shown)+.input__label {
+    transform: translate(.25rem, -65%) scale(.8);
+    color: var(--color-accent);
+}
+
+.button-group {
+    margin-top: calc(var(--size-bezel) * 2.5);
+}
+
+button {
+    color: currentColor;
+    padding: var(--size-bezel) calc(var(--size-bezel) * 2);
+    background: var(--color-accent);
+    border: none;
+    border-radius: var(--size-radius);
+    font-weight: 900;
+}
+
+button[type=reset] {
+    background: var(--color-background);
+    font-weight: 200;
+}
+
+button+button {
+    margin-left: calc(var(--size-bezel) * 2);
+}
+
+.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-right: .5em;
+}
+
+.hidden {
+    display: none;
+}
+
+#plot-div {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+    min-height: 1em;
+    /* Ensure space is taken even if empty */
+}
+
+.form-container {
+    width: auto;
+    height: auto;
+    overflow-y: auto;
+}
+
+.table-input {
+    width: 80px;
+}
+
+.collapsible-header {
+    cursor: pointer;
+}
+
+.collapsible-content {
+    display: none;
+}
+
+.collapsible-content.show {
+    display: block;
+}
+
+body {
+    background-color: #dee0e0;
+}

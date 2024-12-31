@@ -60,7 +60,7 @@ def index():
 
             if x0 is not None and y0 is not None and step_value is not None:
                 x = np.linspace(x0, y0, step_value)
-                x_fine = np.linspace(x0, y0, 1000)  # For a continuous plot
+                x_fine = np.linspace(x0, y0)  # For a continuous plot
             else:
                 x = np.array([])
                 x_fine = np.array([])
