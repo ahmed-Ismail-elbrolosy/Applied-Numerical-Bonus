@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import plotly.graph_objs as go
 import plotly.io as pio
 import numpy as np
@@ -44,14 +44,16 @@ def newton_interpolation(x, y, x_fine):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    plot_div = ""
-    try:
-        if request.method == 'POST':
+    if request.method == 'POST':
+        logging.debug("Received POST request")  # Add this line
+        try:
             x0 = float(request.form['x0'])
             y0 = float(request.form['y0'])
             step_value = int(request.form['step_value'])
             equation = request.form['equation']
             algorithms = request.form.getlist('algorithms')
+
+            logging.debug(f"x0: {x0}, y0: {y0}, step_value: {step_value}, equation: {equation}, algorithms: {algorithms}")  # Add this line
 
             x = np.linspace(x0, y0, step_value)
             x_sym = sp.symbols('x')
@@ -59,6 +61,7 @@ def index():
 
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=x, y=y_exact, mode='lines', name='Exact Equation', line=dict(color='black', width=1)))
+            fig.add_trace(go.Scatter(x=x, y=y_exact, mode='markers', name='Points', marker=dict(color='red', size=6)))
 
             if 'cubic_spline' in algorithms:
                 cs = CubicSpline(x, y_exact)
@@ -73,12 +76,12 @@ def index():
                 y_interp_vander = vandermonde_interpolation(x, y_exact, x)
                 fig.add_trace(go.Scatter(x=x, y=y_interp_vander, mode='lines', name='Vandermonde', line=dict(color='green', width=2)))
 
-            plot_div = pio.to_html(fig, full_html=False)
-    except Exception as e:
-        logging.error("Error occurred", exc_info=True)
-        plot_div = f"<div class='alert alert-danger'>An error occurred: {e}</div>"
-
-    return render_template('index.html', plot_div=plot_div)
+            plot_html = pio.to_html(fig, full_html=False)
+            return plot_html
+        except Exception as e:
+            logging.error("Error occurred", exc_info=True)
+            return f"<div class='alert alert-danger'>An error occurred: {e}</div>"
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

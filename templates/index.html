@@ -6,50 +6,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Numerical Analysis Visualization</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+        #plot-div {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container">
         <h1 class="mt-5">Numerical Analysis Visualization</h1>
-        <div class="card mt-3">
-            <div class="card-body">
-                <form method="POST">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="x0">x<sub>0</sub>:</label>
-                            <input type="number" class="form-control" id="x0" name="x0" required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="y0">x<sub>f</sub>:</label>
-                            <input type="number" class="form-control" id="y0" name="y0" required>
-                        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <form id="graph-form" method="POST">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="x0">x<sub>0</sub>:</label>
+                                    <input type="number" class="form-control" id="x0" name="x0" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="y0">x<sub>f</sub>:</label>
+                                    <input type="number" class="form-control" id="y0" name="y0" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="step_value">Number of Steps (n):</label>
+                                <input type="number" class="form-control" id="step_value" name="step_value" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="equation">Equation:</label>
+                                <input type="text" class="form-control" id="equation" name="equation" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Algorithms:</label><br>
+                                <input type="checkbox" id="cubic_spline" name="algorithms" value="cubic_spline">
+                                <label for="cubic_spline">Cubic Spline</label><br>
+                                <input type="checkbox" id="newton" name="algorithms" value="newton">
+                                <label for="newton">Newton</label><br>
+                                <input type="checkbox" id="vandermonde" name="algorithms" value="vandermonde">
+                                <label for="vandermonde">Vandermonde</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Generate</button>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label for="step_value">Number of Steps (n):</label>
-                        <input type="number" class="form-control" id="step_value" name="step_value" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="equation">Equation:</label>
-                        <input type="text" class="form-control" id="equation" name="equation" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Algorithms:</label><br>
-                        <input type="checkbox" id="cubic_spline" name="algorithms" value="cubic_spline">
-                        <label for="cubic_spline">Cubic Spline</label><br>
-                        <input type="checkbox" id="newton" name="algorithms" value="newton">
-                        <label for="newton">Newton</label><br>
-                        <input type="checkbox" id="vandermonde" name="algorithms" value="vandermonde">
-                        <label for="vandermonde">Vandermonde</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Generate</button>
-                </form>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="mt-3" id="plot-div">
+                    {{ plot_div|safe }}
+                </div>
             </div>
         </div>
-        <div class="mt-5">
-            {{ plot_div|safe }}
-        </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#graph-form').on('submit', function (event) {
+                event.preventDefault();
+                console.log('Form submitted'); // Add this line
+                $.ajax({
+                    url: '/',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#plot-div').html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        $('#plot-div').html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+                    }
+                });
+            });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
