@@ -90,24 +90,25 @@ def index():
 
             if 'cubic_spline' in algorithms:
                 cs = CubicSpline(x, y_exact_points)
-                y_interp_cubic = cs(x_fine)
-                fig.add_trace(go.Scatter(x=x_fine, y=y_interp_cubic, mode='lines', name='Cubic Spline', line=dict(color='orange', width=2)))
+                y_interp_cubic = cs(x_fine if x_fine.size > 0 else np.linspace(x.min(), x.max(), 1000))
+                fig.add_trace(go.Scatter(x=x_fine if x_fine.size > 0 else np.linspace(x.min(), x.max(), 1000), y=y_interp_cubic, mode='lines', name='Cubic Spline', line=dict(color='orange', width=2)))
                 y_interp_cubic_points = cs(x)
                 for point, y_val in zip(points, y_interp_cubic_points):
                     point['cubic_spline'] = float(y_val)
-                    point['cubic_spline_error'] = abs(point['y'] - point['cubic_spline'])
+                    # Calculate the cubic spline error using its own formula
+                    point['cubic_spline_error'] = abs(cs(point['x']) - point['y'])
 
             if 'newton' in algorithms:
-                y_interp_newton = newton_interpolation(x, y_exact_points, x_fine)
-                fig.add_trace(go.Scatter(x=x_fine, y=y_interp_newton, mode='lines', name='Newton', line=dict(color='purple', width=2)))
+                y_interp_newton = newton_interpolation(x, y_exact_points, x_fine if x_fine.size > 0 else np.linspace(x.min(), x.max(), 1000))
+                fig.add_trace(go.Scatter(x=x_fine if x_fine.size > 0 else np.linspace(x.min(), x.max(), 1000), y=y_interp_newton, mode='lines', name='Newton', line=dict(color='purple', width=2)))
                 y_interp_newton_points = newton_interpolation(x, y_exact_points, x)
                 for point, y_val in zip(points, y_interp_newton_points):
                     point['newton'] = float(y_val)
                     point['newton_error'] = abs(point['y'] - point['newton'])
 
             if 'vandermonde' in algorithms:
-                y_interp_vander = vandermonde_interpolation(x, y_exact_points, x_fine)
-                fig.add_trace(go.Scatter(x=x_fine, y=y_interp_vander, mode='lines', name='Vandermonde', line=dict(color='green', width=2)))
+                y_interp_vander = vandermonde_interpolation(x, y_exact_points, x_fine if x_fine.size > 0 else np.linspace(x.min(), x.max(), 1000))
+                fig.add_trace(go.Scatter(x=x_fine if x_fine.size > 0 else np.linspace(x.min(), x.max(), 1000), y=y_interp_vander, mode='lines', name='Vandermonde', line=dict(color='green', width=2)))
                 y_interp_vander_points = vandermonde_interpolation(x, y_exact_points, x)
                 for point, y_val in zip(points, y_interp_vander_points):
                     point['vandermonde'] = float(y_val)
