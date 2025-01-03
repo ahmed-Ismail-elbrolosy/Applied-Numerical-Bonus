@@ -181,7 +181,65 @@
             <div class="col-md-6">
                 <div class="card mt-3 form-container">
                     <div class="card-body">
+                        <h3>Select Mode</h3>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mode" id="mode-equation" value="equation"
+                                checked>
+                            <label class="form-check-label" for="mode-equation">
+                                Equation
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mode" id="mode-points" value="points">
+                            <label class="form-check-label" for="mode-points">
+                                Points
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mode" id="mode-runge" value="runge">
+                            <label class="form-check-label" for="mode-runge">
+                                Runge Function
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3 form-container" id="equation-form-container">
+                    <div class="card-body">
+                        <form id="parameters-form" method="POST">
+                            <input type="hidden" name="mode" value="equation">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="x0">x<sub>0</sub>:</label>
+                                    <input type="number" class="form-control" id="x0" name="x0">
+                                    <div class="error" id="x0-error"></div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="y0">x<sub>f</sub>:</label>
+                                    <input type="number" class="form-control" id="y0" name="y0">
+                                    <div class="error" id="y0-error"></div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="step_value">Number of Steps (n):</label>
+                                    <input type="number" class="form-control" id="step_value" name="step_value">
+                                    <div class="error" id="step_value-error"></div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="equation">Equation:</label>
+                                    <input type="text" class="form-control" id="equation" name="equation">
+                                    <div class="error" id="equation-error"></div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Generate</button>
+                        </form>
+                        <div class="error mt-3" id="parameters-form-error"></div>
+                    </div>
+                </div>
+                <div class="card mt-3 form-container" id="points-form-container" style="display: none;">
+                    <div class="card-body">
                         <form id="points-form" method="POST">
+                            <input type="hidden" name="mode" value="points">
                             <div class="form-group">
                                 <h3>Points</h3>
                                 <table class="table table-bordered" id="points-input-table">
@@ -211,6 +269,21 @@
                         <div class="error mt-3" id="points-form-error"></div>
                     </div>
                 </div>
+                <div class="card mt-3 form-container" id="runge-form-container" style="display: none;">
+                    <div class="card-body">
+                        <form id="runge-form" method="POST">
+                            <input type="hidden" name="mode" value="runge">
+                            <div class="form-group">
+                                <label for="num_points">Number of Points:</label>
+                                <input type="number" class="form-control" id="num_points" name="num_points" min="2"
+                                    value="10">
+                                <div class="error" id="num_points-error"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Generate</button>
+                        </form>
+                        <div class="error mt-3" id="runge-form-error"></div>
+                    </div>
+                </div>
                 <div class="card mt-3 form-container">
                     <div class="card-body">
                         <form id="algorithms-form" method="POST">
@@ -221,56 +294,21 @@
                                 <label for="cubic_spline">Cubic Spline</label><br>
                                 <input type="checkbox" id="newton" name="algorithms" value="newton" checked="true">
                                 <label for="newton">Newton</label><br>
-                                <input type="checkbox" id="vandermonde" name="algorithms" value="vandermonde"
-                                    checked="true">
-                                <label for="vandermonde">Vandermonde</label>
+                                <input type="checkbox" id="vandermonde" name="algorithms" value="vandermonde">
+                                <label for="vandermonde">Vandermonde</label><br>
                             </div>
                             <button type="submit" class="btn btn-primary">Generate</button>
                         </form>
                         <div class="error mt-3" id="algorithms-form-error"></div>
                     </div>
                 </div>
-                <div class="card mt-3 form-container">
-                    <div class="card-body">
-                        <div class="collapsible-header" data-toggle="collapse" data-target="#parameters-form-container">
-                            <h5>Enter Parameters <span class="float-right">&#9660;</span></h5>
-                        </div>
-                        <div id="parameters-form-container" class="collapsible-content">
-                            <form id="parameters-form" method="POST">
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <label for="x0">x<sub>0</sub>:</label>
-                                        <input type="number" class="form-control" id="x0" name="x0">
-                                        <div class="error" id="x0-error"></div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="y0">x<sub>f</sub>:</label>
-                                        <input type="number" class="form-control" id="y0" name="y0">
-                                        <div class="error" id="y0-error"></div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <label for="step_value">Number of Steps (n):</label>
-                                        <input type="number" class="form-control" id="step_value" name="step_value">
-                                        <div class="error" id="step_value-error"></div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="equation">Equation:</label>
-                                        <input type="text" class="form-control" id="equation" name="equation">
-                                        <div class="error" id="equation-error"></div>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Generate</button>
-                            </form>
-                            <div class="error mt-3" id="parameters-form-error"></div>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="col-md-6">
                 <div class="mt-3" id="plot-div">
                     {{ plot_div|safe }}
+                </div>
+                <div class="mt-3" id="error-plot-div" style="display: none;">
+                    {{ error_plot_div|safe }}
                 </div>
             </div>
         </div>
@@ -287,11 +325,7 @@
                                 <th>x</th>
                                 <th>y</th>
                                 <th>Cubic Spline</th>
-                                <th>Cubic Spline Error</th>
                                 <th>Newton</th>
-                                <th>Newton Error</th>
-                                <th>Vandermonde</th>
-                                <th>Vandermonde Error</th>
                             </tr>
                         </thead>
                         <tbody id="points-tbody">
@@ -340,9 +374,14 @@
                     $.ajax({
                         url: '/',
                         type: 'POST',
-                        data: $('#parameters-form').serialize() + '&' + $('#points-form').serialize() + '&' + $('#algorithms-form').serialize(),
+                        data: $('#parameters-form').serialize() + '&' + $('#points-form').serialize() + '&' + $('#runge-form').serialize() + '&' + $('#algorithms-form').serialize(),
                         success: function (response) {
                             $('#plot-div').html(response.plot_html);
+                            if (response.error_plot_html) {
+                                $('#error-plot-div').html(response.error_plot_html).show();
+                            } else {
+                                $('#error-plot-div').hide();
+                            }
                             $('#parameters-form-error').text('');
                             $('#points-form-error').text('');
                             $('#algorithms-form-error').text('');
@@ -364,11 +403,7 @@
                         <td>${point.x}</td>
                         <td>${point.y}</td>
                         <td>${point.cubic_spline || ''}</td>
-                        <td>${point.cubic_spline_error || ''}</td>
                         <td>${point.newton || ''}</td>
-                        <td>${point.newton_error || ''}</td>
-                        <td>${point.vandermonde || ''}</td>
-                        <td>${point.vandermonde_error || ''}</td>
                     </tr>`);
                 });
             }
@@ -395,6 +430,11 @@
                 generatePlot();
             });
 
+            $('#runge-form').on('submit', function (event) {
+                event.preventDefault();
+                generatePlot();
+            });
+
             $('#algorithms-form').on('submit', function (event) {
                 event.preventDefault();
                 generatePlot();
@@ -404,7 +444,7 @@
                 generatePlot();
             });
 
-            $('#cubic_spline, #newton, #vandermonde').on('change', function () {
+            $('#cubic_spline, #newton').on('change', function () {
                 generatePlot();
             });
 
@@ -431,6 +471,26 @@
             $('.collapsible-header').on('click', function () {
                 $(this).find('span').toggleClass('rotate');
                 $(this).next('.collapsible-content').toggleClass('show');
+            });
+
+            $('input[name="mode"]').on('change', function () {
+                if ($('#mode-equation').is(':checked')) {
+                    $('#equation-form-container').show();
+                    $('#points-form-container').hide();
+                    $('#runge-form-container').hide();
+                    $('input[name="mode"]').val('equation');
+                } else if ($('#mode-points').is(':checked')) {
+                    $('#equation-form-container').hide();
+                    $('#points-form-container').show();
+                    $('#runge-form-container').hide();
+                    $('#error-plot-div').hide(); // Ensure the second plot is hidden when the points mode is selected
+                    $('input[name="mode"]').val('points');
+                } else {
+                    $('#equation-form-container').hide();
+                    $('#points-form-container').hide();
+                    $('#runge-form-container').show();
+                    $('input[name="mode"]').val('runge');
+                }
             });
         });
     </script>

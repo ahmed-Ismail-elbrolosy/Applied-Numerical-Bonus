@@ -37,12 +37,6 @@ class RungePhenomenonApp:
         """The Runge function."""
         return 1 / (1 + 25 * x ** 2)
 
-    def vandermonde_interpolation(self, x, y, x_fine):
-        """Perform Vandermonde interpolation."""
-        A = np.vander(x, increasing=True)
-        coeffs = np.linalg.solve(A, y)
-        return np.polyval(coeffs[::-1], x_fine)
-
     def newton_interpolation(self, x, y, x_fine):
         """Perform Newton's divided difference interpolation."""
         n = len(x)
@@ -86,18 +80,13 @@ class RungePhenomenonApp:
         cs = CubicSpline(x, y)
         y_interp_cubic = cs(x_fine)
 
-        # Vandermonde interpolation
-        y_interp_vander = self.vandermonde_interpolation(x, y, x_fine)
-
         # Newton interpolation
         y_interp_newton = self.newton_interpolation(x, y, x_fine)
 
         # Calculate errors
         error_cubic = np.abs(y_fine - y_interp_cubic)
-        error_vander = np.abs(y_fine - y_interp_vander)
         error_newton = np.abs(y_fine - y_interp_newton)
         max_error_cubic = np.max(error_cubic)
-        max_error_vander = np.max(error_vander)
         max_error_newton = np.max(error_newton)
 
         # Get the selected plot option
@@ -111,9 +100,8 @@ class RungePhenomenonApp:
             axs[0].plot(x_fine, y_fine, label="Runge Function", color='blue')
             axs[0].scatter(x, y, color='red', label="Interpolation Points")
             axs[0].plot(x_fine, y_interp_cubic, label="Cubic Spline Interpolation", color='orange')
-            axs[0].plot(x_fine, y_interp_vander, label="Vandermonde Interpolation", color='green', linestyle='--')
             axs[0].plot(x_fine, y_interp_newton, label="Newton Interpolation", color='purple', linestyle='-.') 
-            axs[0].set_title("Cubic Spline, Vandermonde, and Newton Interpolation")
+            axs[0].set_title("Cubic Spline and Newton Interpolation")
             axs[0].set_xlabel("x")
             axs[0].set_ylabel("f(x)")
             axs[0].axhline(0, color='black', lw=0.5, ls='--')
@@ -123,9 +111,8 @@ class RungePhenomenonApp:
 
             # Plotting the errors
             axs[1].plot(x_fine, error_cubic, label="Cubic Spline Error", color='red')
-            axs[1].plot(x_fine, error_vander, label="Vandermonde Error", color='green')
             axs[1].plot(x_fine, error_newton, label="Newton Error", color='purple')
-            axs[1].set_title(f"Errors: Max Cubic = {max_error_cubic:.4e}, Max Vandermonde = {max_error_vander:.4e}, Max Newton = {max_error_newton:.4e}")
+            axs[1].set_title(f"Errors: Max Cubic = {max_error_cubic:.4e}, Max Newton = {max_error_newton:.4e}")
             axs[1].set_xlabel("x")
             axs[1].set_ylabel("Error")
             axs[1].axhline(0, color='black', lw=0.5, ls='--')
@@ -136,9 +123,8 @@ class RungePhenomenonApp:
         elif method == "Error Only":
             # Plotting the errors
             axs[0].plot(x_fine, error_cubic, label="Cubic Spline Error", color='red')
-            axs[0].plot(x_fine, error_vander, label="Vandermonde Error", color='green')
             axs[0].plot(x_fine, error_newton, label="Newton Error", color='purple')
-            axs[0].set_title(f"Errors: Max Cubic = {max_error_cubic:.4e}, Max Vandermonde = {max_error_vander:.4e}, Max Newton = {max_error_newton:.4e}")
+            axs[0].set_title(f"Errors: Max Cubic = {max_error_cubic:.4e}, Max Newton = {max_error_newton:.4e}")
             axs[0].set_xlabel("x")
             axs[0].set_ylabel("Error")
             axs[0].axhline(0, color='black', lw=0.5, ls='--')
@@ -151,9 +137,8 @@ class RungePhenomenonApp:
             axs[0].plot(x_fine, y_fine, label="Runge Function", color='blue')
             axs[0].scatter(x, y, color='red', label="Interpolation Points")
             axs[0].plot(x_fine, y_interp_cubic, label="Cubic Spline Interpolation", color='orange')
-            axs[0].plot(x_fine, y_interp_vander, label="Vandermonde Interpolation", color='green', linestyle='--')
             axs[0].plot(x_fine, y_interp_newton, label="Newton Interpolation", color='purple', linestyle='-.') 
-            axs[0].set_title("Cubic Spline, Vandermonde, and Newton Interpolation")
+            axs[0].set_title("Cubic Spline and Newton Interpolation")
             axs[0].set_xlabel("x")
             axs[0].set_ylabel("f(x)")
             axs[0].axhline(0, color='black', lw=0.5, ls='--')
