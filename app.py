@@ -118,13 +118,6 @@ def index():
                 for point, y_val in zip(points, y_interp_newton_points):
                     point['newton'] = float(y_val)
 
-            if 'vandermonde' in algorithms:
-                y_interp_vander = vandermonde_interpolation(x, y_exact_points, x_fine)
-                fig.add_trace(go.Scatter(x=x_fine, y=y_interp_vander, mode='lines', name='Vandermonde', line=dict(color='green', width=2)))
-                y_interp_vander_points = vandermonde_interpolation(x, y_exact_points, x)
-                for point, y_val in zip(points, y_interp_vander_points):
-                    point['vandermonde'] = float(y_val)
-
             # Create error plot
             error_fig = go.Figure()
 
@@ -140,9 +133,6 @@ def index():
                 if 'newton' in algorithms:
                     y_interp_newton = newton_interpolation(x, y_exact_points, x_fine)
                     error_fig.add_trace(go.Scatter(x=x_fine, y=y_interp_newton, mode='lines', name='Newton Fit', line=dict(color='purple', width=2)))
-                if 'vandermonde' in algorithms:
-                    y_interp_vander = vandermonde_interpolation(x, y_exact_points, x_fine)
-                    error_fig.add_trace(go.Scatter(x=x_fine, y=y_interp_vander, mode='lines', name='Vandermonde Fit', line=dict(color='green', width=2)))
 
             plot_html = pio.to_html(fig, full_html=False)
             error_plot_html = pio.to_html(error_fig, full_html=False) if mode != 'points' else ''
