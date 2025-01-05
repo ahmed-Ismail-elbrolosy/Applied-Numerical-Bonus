@@ -1,3 +1,7 @@
+# Engineered By:
+  - Adham Omar 120220141
+  - Ahmed Elbrolosy 120220148
+
 # Numerical Analysis Visualization
 
 This project provides a web-based application for visualizing numerical analysis techniques such as interpolation using cubic splines and Newton's divided difference method.
